@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Workshop MMF V.2</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte3/plugins/fontawesome-free/css/all.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte3/dist/css/adminlte.min.css') }}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box" style="width: 400px">
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+        <a href="../../index2.html" class="h1">Workshop MMF V.2</a>
+    </div>
+    <div class="card-body">
+
+        <form method="POST" action="{{ route('login') }}">
+        @csrf
+        <div class="input-group mb-3">
+            <input id="username" type="text" class="form-control {{ $errors->has('username') ? ' is-invalid' : '' }}" name="username" value="{{ old('username') }}" required autofocus placeholder="Nomer Induk Karyawan">
+            <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-user"></span>
+            </div>
+            </div>
+            @if ($errors->has('username'))
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $errors->first('username') }}</strong>
+                </span>
+            @endif
+        </div>
+        <div class="input-group mb-3">
+            <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="Password" required>
+            <div class="input-group-append">
+            <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+            </div>
+            </div>
+            @if ($errors->has('password'))
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $errors->first('password') }}</strong>
+            </span>
+            @endif
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </div>
+            <!-- /.col -->
+        </div>
+        </form>
+    </div>
+    <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{{ asset('vendor/adminlte3/plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ asset('vendor/adminlte3/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ asset('vendor/adminlte3/dist/js/adminlte.min.js') }}"></script>
+</body>
+</html>
