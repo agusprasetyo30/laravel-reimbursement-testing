@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeRequest;
 use App\Models\Employee;
+use App\Models\User;
+use Gate;
+use Hash;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -20,15 +24,25 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        if (Gate::denies('create-user')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
+        return view('employee.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EmployeeRequest $request)
     {
-        //
+        $request->merge(['password' => Hash::make($request->password)]);
+
+        User::create($request->all());
+
+        return redirect()->route('employee.index')
+            ->with('alert_type', 'success')
+            ->with('message', 'Add employee successfully');
     }
 
     /**
@@ -42,9 +56,15 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
-        //
+        if (Gate::denies('edit-user')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
+        $employee = User::find($id);
+
+        return view('employee.edit', compact('employee'));
     }
 
     /**

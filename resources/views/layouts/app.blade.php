@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
 	<title>@yield('title') - Starter Template</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<!-- General CSS Files -->
 	<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
@@ -11,10 +12,13 @@
 
 
 	<!-- CSS Libraries -->
+	<link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/css/datatables.min.css') }}">
 
 	<!-- Template CSS -->
 	<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 	<link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
+
 
 	@stack('css')
 </head>
@@ -44,18 +48,35 @@
 
 	<!-- General JS Scripts -->
 	<script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+	<script src="{{ asset('assets/js/datatables.min.js') }}"></script>
 	<script src="{{ asset('assets/js/popper.min.js') }}"></script>
 	<script src="{{ asset('assets/js/bootstrap.min.js') }}" ></script>
 	<script src="{{ asset('assets/js/jquery.nicescroll.min.js') }}"></script>
 	<script src="{{ asset('assets/js/moment.min.js') }}"></script>
 	<script src="{{ asset('assets/js/stisla.js') }}"></script>
-
 	<!-- JS Libraies -->
+	<script src="{{ asset('assets/js/sweetalert2.min.js') }}"></script>
 
 	<!-- Template JS File -->
 	<script src="{{ asset('assets/js/scripts.js') }}"></script>
 	<script src="{{ asset('assets/js/custom.js') }}"></script>
 
+	<script>
+		@if (session("alert_type") && session("message"))
+			var toast = Swal.mixin({
+				toast: true,
+				position: 'top-end',
+				showConfirmButton: false,
+				timerProgressBar: true,
+				timer: 3000
+			});
+
+			toast.fire({
+				icon: '{{ session('alert_type') }}',
+				title: '{{ session('message') }}'
+			})
+		@endif
+	</script>
 	<!-- Page Specific JS File -->
 	@stack('js')
 </body>

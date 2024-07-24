@@ -15,6 +15,28 @@ namespace App\Models{
 /**
  * 
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Employee query()
+ */
+	class Employee extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Reimbursement newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reimbursement newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reimbursement query()
+ */
+	class Reimbursement extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string $email

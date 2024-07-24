@@ -21,6 +21,8 @@ Auth::routes();
 Route::redirect('/', '/dashboard', 301);
 
 Route::middleware(['auth'])->group(function () {
+    require('datatables.php');
+
     // dashboard
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
