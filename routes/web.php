@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PembayaranReimbursementController;
 use App\Http\Controllers\ReimbursementController;
+use App\Models\Reimbursement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,26 +26,31 @@ Route::middleware(['auth'])->group(function () {
     require('datatables.php');
 
     Route::get('/test', function() {
-        $validation = [
-            'name'     => ['required'],
-            'email'    => ['required', 'unique:users'],
-        ];
+        $reimbur = Reimbursement::with('reimbursementApproval')
+            ->whereHas('reimbursementApproval', function($q) {
+                $q->where('status', true);
+            })->get();
 
-        unset($validation['email'][1]);
-
-        dd($validation, $validation['email']);
+        dd($reimbur);
     });
 
     // dashboard
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
     // Employee
-    Route::resource('employee', EmployeeController::class);
+    Route::resource('employee', EmployeeController::class)->except('show');
 
     // reimbursement
     Route::prefix('/reimbursement')->controller(ReimbursementController::class)->as('reimbursement.')->group(function() {
-        Route::get('/', 'index')->name('index');
-
-        // Route::resource('/', ReimbursementController::class);
+        Route::post('/{id}/approve', 'approveReimbursement')->name('approve');
     });
+
+    Route::resource('reimbursement', ReimbursementController::class)->except('show');
+
+    // Pembayaran Reimbursement
+    Route::prefix('/pembayaran')->controller(PembayaranReimbursementController::class)->as('pembayaran.')->group(function() {
+        Route::get('/', 'index')->name('index');
+        Route::post('/{id}/approve', 'approvePembayaran')->name('approve');
+    });
+
 });

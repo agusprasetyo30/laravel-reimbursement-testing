@@ -17,5 +17,9 @@
 			@can('index-employee')
 				<li class="nav-item {{ Request::is('reimbursement*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('reimbursement.index') }}"><i class="fas fa-money-bill"></i> <span>Reimbursement</span></a></li>
 			@endcan
+
+			@can('index-pembayaran')
+				<li class="nav-item {{ Request::is('pembayaran*') ? 'active' : '' }}"><a class="nav-link" href="{{ route('pembayaran.index') }}"><i class="fas fa-money-check"></i> <span>Pembayaran</span></a></li>
+			@endcan
 	</ul>
 </aside>

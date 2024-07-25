@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('reimbursements', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->date('date');
+            $table->text('description');
+            $table->text('document_file_name');
+            $table->text('document_file_path');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

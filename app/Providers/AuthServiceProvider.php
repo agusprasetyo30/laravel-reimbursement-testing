@@ -13,14 +13,22 @@ class AuthServiceProvider extends ServiceProvider
     public static $permission = [
         'index-user'   => ['direktur', 'staff', 'finance'],
         'index-employee'  => ['direktur', 'staff', 'finance'],
-        'show-user'    => ['direktur', 'staff', 'finance'],
         'create-user'  => ['direktur'],
         'store-user'   => ['direktur'],
         'edit-user'    => ['direktur'],
         'update-user'  => ['direktur'],
         'destroy-user' => ['direktur'],
 
+        'index-reimbursement'   => ['direktur', 'staff', 'finance'],
+        'create-reimbursement'  => ['direktur', 'staff', 'finance'],
+        'store-reimbursement'   => ['direktur', 'staff', 'finance'],
+        'edit-reimbursement'    => ['direktur', 'staff', 'finance'],
+        'update-reimbursement'  => ['direktur', 'staff', 'finance'],
+        'destroy-reimbursement' => ['direktur', 'staff', 'finance'],
+        'approve-reimbursement' => ['direktur', 'finance'],
 
+        'index-pembayaran'   => ['direktur', 'finance'],
+        'approve-pembayaran' => ['direktur', 'finance'],
     ];
 
     /**

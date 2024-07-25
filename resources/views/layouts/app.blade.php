@@ -14,6 +14,8 @@
 	<!-- CSS Libraries -->
 	<link rel="stylesheet" href="{{ asset('assets/css/sweetalert2.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('assets/css/datatables.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/css/daterangepicker.css') }}">
+	<link rel="stylesheet" href="{{ asset('assets/css/summernote-bs4.min.css') }}">
 
 	<!-- Template CSS -->
 	<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -56,6 +58,8 @@
 	<script src="{{ asset('assets/js/stisla.js') }}"></script>
 	<!-- JS Libraies -->
 	<script src="{{ asset('assets/js/sweetalert2.min.js') }}"></script>
+	<script src="{{ asset('assets/js/daterangepicker.js') }}"></script>
+	<script src="{{ asset('assets/js/summernote-bs4.min.js') }}"></script>
 
 	<!-- Template JS File -->
 	<script src="{{ asset('assets/js/scripts.js') }}"></script>

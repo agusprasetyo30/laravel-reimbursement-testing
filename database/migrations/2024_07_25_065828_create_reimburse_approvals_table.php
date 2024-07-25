@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('reimburse_approvals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('reimbursement_id')->constrained('reimbursements');
+            $table->boolean('status')->nullable();
+            $table->string('note', 100)->nullable();
+            $table->foreignId('approved_by')->constrained('users');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('reimburse_approvals');
     }
 };

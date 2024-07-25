@@ -35,7 +35,7 @@
 								<th width="15%">NIP</th>
 								<th width="30%">Email</th>
 								<th width="20%">Role</th>
-								<th width="10%">Actions</th>
+								<th width="10%"></th>
 							</tr>
 						</thead>
 					</table>
