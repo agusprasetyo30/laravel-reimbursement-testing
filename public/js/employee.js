@@ -36,10 +36,15 @@ function generateDatatables()
 
 // delete_button
 $(document).on('click', '#delete_button', function () {
-	console.log("bla bla bla");
+	let table   = $('#employee_table').DataTable();
+	let data_row = table.row($(this).parents('tr')).data(); // Ini digunakan ketika hanya 1 table aja tanpa tambahan div/class baru
 
-	console.log($(this).data('delete-route'));
+	let url = $(this).data('delete-route')
+	let url_fix = url.replace(':id', data_row['id'])
 
+	console.log(url_fix);
+
+	console.log(data_row);
 	Swal.fire({
 		title: "Delete Data  ?",
 		text: "Data changes will affect the stored data!",
@@ -51,22 +56,42 @@ $(document).on('click', '#delete_button', function () {
 		cancelButtonText: 'Cancel!',
 	}).then((result) => {
 		if (result.isConfirmed) {
-			console.log("Ini oke");
-		}
+			$.ajax({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				url: url_fix,
+				type: 'DELETE',
+				success: function (data) {
+					if (data.error == 0) {
+						toast.fire({
+							icon: 'success',
+							title: data.message
+						})
 
-		console.log(result);
+						$('#employee_table').DataTable().ajax.reload()
+					}
+
+					// Muncul alert error ketika tidak lolos validasi
+					if (data.error == 1) {
+						if (data.code == 'validation') {
+							$.each(data.message, function (index, message) {
+								toast.fire({
+									icon: 'error',
+									title: data.message
+								})
+							})
+						} else {
+							$.each(data.message, function (index, message) {
+								toast.fire({
+									icon: 'error',
+									title: data.message
+								})
+							})
+						}
+					}
+				}
+			})
+		}
 	})
 })
-
-// $.ajax({
-// 	headers: {
-// 		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-// 	},
-// 	url: url_delete_vessel_certificate,
-// 	type: 'DELETE',
-// 	success: function (data) {
-// 		toastr.success(data.message)
-
-// 		$('#vessel_certificate_table').DataTable().ajax.reload()
-// 	}
-// })

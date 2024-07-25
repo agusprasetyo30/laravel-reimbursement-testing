@@ -8,6 +8,7 @@ use App\Models\User;
 use Gate;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
@@ -34,8 +35,18 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(EmployeeRequest $request)
+    public function store(Request $request)
     {
+        $validation_input = $this->customValidation($request);
+
+        // Validation checking
+        if ($validation_input->fails()) {
+            return redirect()
+                ->route('employee.create')
+                ->withErrors($validation_input->messages())
+                ->withInput();
+        }
+
         $request->merge(['password' => Hash::make($request->password)]);
 
         User::create($request->all());
@@ -43,14 +54,6 @@ class EmployeeController extends Controller
         return redirect()->route('employee.index')
             ->with('alert_type', 'success')
             ->with('message', 'Add employee successfully');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Employee $employee)
-    {
-        //
     }
 
     /**
@@ -70,16 +73,78 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
-        //
+        $employee = User::find($id);
+        $request->merge(['nip' => $employee->nip]);
+
+        $validation_input = $this->customValidation($request, 'update');
+
+        // Validation checking
+        if ($validation_input->fails()) {
+            return redirect()
+                ->route('employee.edit', $employee->id)
+                ->withErrors($validation_input->messages())
+                ->withInput();
+        }
+
+        $employee->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('employee.index')
+            ->with('alert_type', 'success')
+            ->with('message', 'Update employee successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
-        //
+        $data = User::where('id', $id)->first();
+
+        $data->delete();
+
+        return $this->success($data, "Delete employee successfully");
+    }
+
+    /**
+     * Use to make custom validation data
+     *
+     * @param [type] $request
+     * @param string $type
+     * @return object
+     */
+    private function customValidation($request, $type = 'store')
+    {
+        $validation = [
+            'name'     => ['required'],
+            'email'    => ['required', 'unique:users'],
+            'password' => ['required', 'confirmed'],
+            'nip'      => ['required', 'numeric', 'unique:users'],
+            'role'     => ['required']
+        ];
+
+        // Delete validation unique when same with name
+        if ($type == 'update') {
+            // delete unused array key when updating data
+            unset($validation['nip']);
+            unset($validation['password']);
+
+            // checking email
+            $check_email = User::where('email', $request->email)
+                ->where('nip', $request->nip)
+                ->first();
+
+            // Delete validation email
+            if ($check_email) unset($validation['email'][1]);
+        }
+
+        return Validator::make($request->all(), $validation, [
+            'role.required' => 'Role / Jurusan not selected',
+        ]);
     }
 }

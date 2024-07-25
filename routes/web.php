@@ -23,6 +23,17 @@ Route::redirect('/', '/dashboard', 301);
 Route::middleware(['auth'])->group(function () {
     require('datatables.php');
 
+    Route::get('/test', function() {
+        $validation = [
+            'name'     => ['required'],
+            'email'    => ['required', 'unique:users'],
+        ];
+
+        unset($validation['email'][1]);
+
+        dd($validation, $validation['email']);
+    });
+
     // dashboard
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 

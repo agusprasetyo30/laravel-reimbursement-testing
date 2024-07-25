@@ -62,15 +62,15 @@
 	<script src="{{ asset('assets/js/custom.js') }}"></script>
 
 	<script>
-		@if (session("alert_type") && session("message"))
-			var toast = Swal.mixin({
-				toast: true,
-				position: 'top-end',
-				showConfirmButton: false,
-				timerProgressBar: true,
-				timer: 3000
-			});
+		var toast = Swal.mixin({
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timerProgressBar: true,
+			timer: 3000
+		});
 
+		@if (session("alert_type") && session("message"))
 			toast.fire({
 				icon: '{{ session('alert_type') }}',
 				title: '{{ session('message') }}'

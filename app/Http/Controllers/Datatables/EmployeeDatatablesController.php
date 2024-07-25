@@ -17,7 +17,7 @@ class EmployeeDatatablesController extends Controller
      */
     public function datalist(Request $request)
     {
-        $data = User::query();
+        $data = User::orderBy('id');
 
         return datatables($data)
             ->addColumn('role_formatted', function($employee) {
@@ -32,7 +32,7 @@ class EmployeeDatatablesController extends Controller
                 }
 
                 if (Gate::check('destroy-user')) {
-                    $delete_button = "<button id='delete_button' class='btn btn-icon btn-danger' data-delete-route='" . route('employee.destroy', $employee->id) . "'><i class='fas fa-trash'></i></button>";
+                    $delete_button = "<button id='delete_button' class='btn btn-icon btn-danger' data-delete-route='" . route('employee.destroy', ':id') . "'><i class='fas fa-trash'></i></button>";
                 }
 
                 return "
