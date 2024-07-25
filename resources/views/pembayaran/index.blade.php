@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reimbursement')
+@section('title', 'Pembayaran Reimbursement')
 
 @section('content')
 	<section class="section">

@@ -1,11 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Index Employee')
 
 @push('css')
-{{-- <link href="https://cdn.datatables.net/2.1.2/css/dataTables.bootstrap4.css" rel="stylesheet"> --}}
-{{-- <link href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css" rel="stylesheet"> --}}
-	{{-- <link href="https://cdn.datatables.net/v/dt/dt-2.1.2/datatables.min.css" rel="stylesheet"> --}}
 @endpush
 
 @section('content')

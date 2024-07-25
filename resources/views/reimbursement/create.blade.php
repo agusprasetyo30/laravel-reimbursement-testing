@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Employee')
+@section('title', 'Create Reimbursement')
 
 @push('css')
 @endpush

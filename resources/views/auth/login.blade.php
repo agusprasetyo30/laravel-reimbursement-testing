@@ -1,6 +1,6 @@
 @extends('layouts.custom')
 
-@section('title', 'Title')
+@section('title', 'Login Area')
 
 @section('content')
 <div class="row">
