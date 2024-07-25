@@ -82,6 +82,33 @@
 						</div>
 					</div>
 					<div class="card-body">
+						<form action="{{ route('employee.change-password', $employee->id) }}" method="post">
+							@csrf
+
+							<div class="form-group">
+								<div class="row">
+									<div class="col-12">
+										<label for="password">New Password <span class="text-danger">*</span></label>
+										<input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password">
+
+										@error('password')
+											<div class="invalid-feedback">
+												{{ $message }}
+											</div>
+										@enderror
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="row">
+									<div class="col-12">
+										<label for="password_confirmation">Password Confirmation <span class="text-danger">*</span></label>
+										<input id="password_confirmation" type="password" class="form-control" name="password_confirmation" >
+									</div>
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary btn-block"><i class="fa fa-key"></i> Change Password</button>
+						</form>
 					</div>
 				</div>
 			</div>

@@ -6,6 +6,8 @@ use App\Helpers\General;
 use App\Models\ReimburseApproval;
 use App\Models\Reimbursement;
 use Carbon\Carbon;
+use DB;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Storage;
@@ -17,6 +19,10 @@ class ReimbursementController extends Controller
      */
     public function index()
     {
+        if (Gate::denies('index-reimbursement')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
         return view('reimbursement.index');
     }
 
@@ -25,6 +31,10 @@ class ReimbursementController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create-reimbursement')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
         return view('reimbursement.create');
     }
 
@@ -33,6 +43,10 @@ class ReimbursementController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('store-reimbursement')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
         $validation_input = $this->customValidation($request);
 
         // Validation checking
@@ -43,27 +57,38 @@ class ReimbursementController extends Controller
                 ->withInput();
         }
 
-        // Upload Document
-        if ($request->file('document')) {
-            $file = General::uploadFile($request->file('document'), 'reimbursement', 'document/reimbursement', true, true);
+        try {
+            DB::beginTransaction();
 
-            $request->merge([
-                'document_file_name' => $file['origin_file_save_name'],
-                'document_file_path' => $file['file_location'],
+            // Upload Document
+            if ($request->file('document')) {
+                $file = General::uploadFile($request->file('document'), 'reimbursement', 'document/reimbursement', true, true);
+
+                $request->merge([
+                    'document_file_name' => $file['origin_file_save_name'],
+                    'document_file_path' => $file['file_location'],
+                ]);
+            }
+
+            Reimbursement::create([
+                'date'         => $request->date,
+                'name'         => $request->name,
+                'description'  => $request->description,
+                'document_file_path'  => $request->document_file_path,
+                'document_file_name'  => $request->document_file_name,
             ]);
+
+            DB::commit();
+
+            return redirect()->route('reimbursement.index')
+                ->with('alert_type', 'success')
+                ->with('message', 'Add Reimbursement Successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return $this->error($e->getMessage());
         }
-
-        Reimbursement::create([
-            'date'         => $request->date,
-            'name'         => $request->name,
-            'description'  => $request->description,
-            'document_file_path'  => $request->document_file_path,
-            'document_file_name'  => $request->document_file_name,
-        ]);
-
-        return redirect()->route('reimbursement.index')
-            ->with('alert_type', 'success')
-            ->with('message', 'Add Reimbursement Successfully');
     }
 
     /**
@@ -71,6 +96,10 @@ class ReimbursementController extends Controller
      */
     public function edit($id)
     {
+        if (Gate::denies('edit-reimbursement')) {
+            abort(403, 'Anda tidak memiliki hak akses');
+        }
+
         $reimbursement = Reimbursement::find($id);
 
         return view('reimbursement.edit', compact('reimbursement'));
@@ -93,30 +122,41 @@ class ReimbursementController extends Controller
                 ->withInput();
         }
 
-        // Upload Document
-        if ($request->file('document')) {
-            // Delete file
-            if ($reimbursement->document_file_path && file_exists(storage_path('app/public/' . $reimbursement->document_file_path))) {
-                Storage::delete('public/' . $reimbursement->document_file_path);
-            }
+        try {
+            DB::beginTransaction();
 
-            $file = General::uploadFile($request->file('document'), 'reimbursement', 'document/reimbursement', true, true);
+                // Upload Document
+                if ($request->file('document')) {
+                    // Delete file
+                    if ($reimbursement->document_file_path && file_exists(storage_path('app/public/' . $reimbursement->document_file_path))) {
+                        Storage::delete('public/' . $reimbursement->document_file_path);
+                    }
 
-            $reimbursement->update([
-                'document_file_name' => $file['origin_file_save_name'],
-                'document_file_path' => $file['file_location'],
-            ]);
+                    $file = General::uploadFile($request->file('document'), 'reimbursement', 'document/reimbursement', true, true);
+
+                    $reimbursement->update([
+                        'document_file_name' => $file['origin_file_save_name'],
+                        'document_file_path' => $file['file_location'],
+                    ]);
+                }
+
+                $reimbursement->update([
+                    'date'         => $request->date,
+                    'name'         => $request->name,
+                    'description'  => $request->description,
+                ]);
+
+                DB::commit();
+
+                return redirect()->route('reimbursement.index')
+                    ->with('alert_type', 'success')
+                    ->with('message', 'Add Reimbursement Successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return $this->error($e->getMessage());
         }
-
-        $reimbursement->update([
-            'date'         => $request->date,
-            'name'         => $request->name,
-            'description'  => $request->description,
-        ]);
-
-        return redirect()->route('reimbursement.index')
-            ->with('alert_type', 'success')
-            ->with('message', 'Add Reimbursement Successfully');
     }
 
     /**
@@ -145,15 +185,26 @@ class ReimbursementController extends Controller
      */
     public function approveReimbursement(Request $request, $id)
     {
-        $reimbursement = ReimburseApproval::create([
-            'reimbursement_id'  => $request->reimbursement_id,
-            'status'            => $request->status, // cek status. Approve = 1, Rejected = 0
-            'note'              => $request->note,
-            'approved_by'       => \Auth::user()->id,
-            'approval_date'     => Carbon::now()->format('Y-m-d')
-        ]);
+        try {
+            DB::beginTransaction();
 
-        return $this->success($reimbursement, "Approval success!");
+            $reimbursement = ReimburseApproval::create([
+                'reimbursement_id'  => $request->reimbursement_id,
+                'status'            => $request->status, // cek status. Approve = 1, Rejected = 0
+                'note'              => $request->note,
+                'approved_by'       => \Auth::user()->id,
+                'approval_date'     => Carbon::now()->format('Y-m-d')
+            ]);
+
+            DB::commit();
+
+            return $this->success($reimbursement, "Approval success!");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return $this->error($e->getMessage());
+        }
     }
 
     /**

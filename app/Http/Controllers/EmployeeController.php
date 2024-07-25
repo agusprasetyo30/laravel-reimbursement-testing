@@ -112,6 +112,35 @@ class EmployeeController extends Controller
     }
 
     /**
+     * Use to change password user
+     *
+     * @param [type] $id
+     * @return void
+     */
+    public function changePassword(Request $request, $id)
+    {
+        $employee = User::find($id);
+        $rules = ["password" => ['required', 'confirmed']];
+        $validation_input = Validator::make($request->all(), $rules);
+
+        // Validation checking
+        if ($validation_input->fails()) {
+            return redirect()
+                ->route('employee.edit', $employee->id)
+                ->withErrors($validation_input->messages())
+                ->withInput();
+        }
+
+        $employee->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return redirect()->route('employee.edit', $employee->id)
+            ->with('alert_type', 'success')
+            ->with('message', 'Change password successfully');
+    }
+
+    /**
      * Use to make custom validation data
      *
      * @param [type] $request

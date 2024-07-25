@@ -20,7 +20,7 @@ function generateDatatables() {
 			{ data: 'name', name: 'name' , orderable: false, searchable: true},
 			{ data: 'description', name: 'description' , orderable: false, searchable: true},
 			{ data: 'document_formatted', name: 'document_file_path' , orderable: false, searchable: true},
-			{ data: 'status_formatted', name: 'status' , orderable: false, searchable: true, className: "dt-center "},
+			{ data: 'status_formatted', name: 'status' , orderable: false, searchable: false, className: "dt-center "},
 			{ data: 'actions', name: 'actions', className: "dt-center"},
 		],
 		language: {

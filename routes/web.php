@@ -38,6 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
     // Employee
+    Route::prefix('/employee')->controller(EmployeeController::class)->as('employee.')->group(function() {
+        Route::post('/{id}/change-password', 'changePassword')->name('change-password');
+    });
+
     Route::resource('employee', EmployeeController::class)->except('show');
 
     // reimbursement

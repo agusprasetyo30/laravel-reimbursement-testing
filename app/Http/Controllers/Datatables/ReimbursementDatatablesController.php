@@ -18,7 +18,7 @@ class ReimbursementDatatablesController extends Controller
      */
     public function datalist(Request $request)
     {
-        $data = Reimbursement::orderBy('id', 'asc');
+        $data = Reimbursement::orderBy('id', 'asc')->get();
 
         return datatables($data)
             ->addColumn('date_formatted', function($reimbursement) {
