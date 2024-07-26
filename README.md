@@ -44,4 +44,4 @@
 5. setelah sukses, tambahkan tabel dengan migrate, caranya adalah dengan ketik di terminal `php artisan migrate`
 6. Untuk membuat user khusus ADMIN, maka tambahkan seeder, dengan cara ketik di terminal `php artisan db:seed`
 7. Buat folder storage dengan cara `php artisan storage:link`
-8. setelah sukses, yaudah selesai berarti
+8. Aplikasi dapat digunakan 😊
